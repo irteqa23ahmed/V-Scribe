@@ -4,7 +4,7 @@ A Virtual Scribe for helping out visually impaired in writing their exams.<br>
 
 Once the repository has been cloned to local device, perform following steps :<br>
 
-1> Go the folder containing all the files and folders.<br>
+1> Pull the repo to your local system and go the folder containing all the files and folders.<br>
 2> Open terminal or command prompt in that directory.<br>
 3> Run 'npm install' to install all the dependecies in the package.json file.<br>
 4> Run 'pip install -r requirements.txt' to install all required python dependencies.<br>
@@ -14,5 +14,3 @@ Once the repository has been cloned to local device, perform following steps :<b
 8> Click on the 'VSCRIBE' logo to skip the face recognition part and go to question.<br>
 9> Click anywhere on the screen to start the assistant.<br>
 10> Speak commands like 'Go to question one' or 'read answer' or 'answer this question'.<br>
-
-It contains specific videos as well as a video which shows the complete run of the application including all the features which we have implemented.
