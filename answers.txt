@@ -1,0 +1,6 @@
+Q 1> This is an additional line This line is being appended. . .This is now in edit mode. The answer has moved into edit mode. 
+
+Q 2> 
+
+Q 3> option A
+
