@@ -1,27 +1,19 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 import pymongo
-from logging.config import dictConfig
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///qna.db'
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["vscribe"]
-mycol = mydb["qna"]
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+
+questions_db_client = pymongo.MongoClient("mongodb://localhost:27017/")
+questions_db = questions_db_client["vscribe"]
+questions_collection = questions_db["qna"]
 
 from vscribe import routes
+from vscribe.models import *
+db.create_all()
