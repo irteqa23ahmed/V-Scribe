@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <style media="screen">
+      body{
+        height: 1000px;
+      }
+      nav a{
+        font-weight: bold;
+        margin: 10px 20px 10px 20px;
+      }
+      .home img{
+        width: 100%;
+        height: 70%;
+        opacity: 0.6;
+      }
+      .content{
+        position: absolute;
+        top: 100px;
+        margin: auto;
+        text-align: center;
+        left: 500px;
+      }
+      .dt{
+        margin: auto;
+        margin-top: 20px;
+        text-align: center;
+      }
+      h1{
+        font-family: 'Montserrat', sans-serif;
+      }
+      #answer{
+        margin-bottom: 30px;
+        -moz-box-shadow: 0 0 5px #888;
+        -webkit-box-shadow: 0 0 5px#888;
+        box-shadow: 0 0 5px #888;
+      }
+      #qno{
+        background-color: black;
+        border-radius: 5px;
+        padding: 2px 5px 2px 5px;
+        color: white;
+        margin-right: 5px;
+      }
+    </style>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <title>Questions</title>
+  </head>
+
+  <script>
+    var active = true
+    $(document).ready(function(){
+    $("*").click(function(event){
+      if (active){
+        console.log('CLICK ACTIVE')
+        event.stopPropagation();
+        window.location.href="{{url_for('process_text',q_no=question.question_no)}}";
+        active = false;
+      }
+      else console.log('CLICK INACTIVE')
+      });
+    });
+  </script>
+
+  <body>
+    <a href="{{url_for('trial',q_no=question.question_no)}}">
+      <div>
+        <nav class="navbar navbar-dark bg-dark">
+          <a class="navbar-brand" href="#"><i class="fas fa-pencil-ruler"></i> V-Scribe</a>
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-link" href="#"><i class="fas fa-question"></i> Questions</a>
+              </li>
+            </ul>
+        </nav>
+            <div class="dt">
+              <div style="clear: both">
+                  <h4 id="qno" style="display: inline;">{{ question.question_no }}</h4>
+                  <h5 id="question" style="display: inline;">{{question.question}}</h5>
+              </div>
+              <br>
+              {% if isNotMcq %}
+              <textarea rows="7" cols="50" id="answer" value="{{question.subjective_answer}}">{{question.subjective_answer}}</textarea>
+              <br>
+              {% else %}
+              {% for i in question.mcq_options %}
+              <h4>{{i.option_name}}</h4>
+              <br>
+              <input class="messageCheckbox" type="checkbox" name="checked_options" value="{{i.option_name}}" disable="true"
+                {% if i.isSelected %}
+                checked
+                {% endif %}
+              >
+              <br>
+              {% endfor %}
+              {% endif %}
+            </div>
+      </div>
+    </a>
+  </body>
+</html>
