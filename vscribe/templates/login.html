@@ -57,7 +57,15 @@
         background-color: #666;
       }
     </style>
-    <script src="{{url_for('static',filename='next.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+          $(document).ready(function(){
+      $("*").click(function(event){
+        event.stopPropagation();
+        window.location.href="{{url_for('verify',post=1)}}";
+        })
+      });
+    </script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
