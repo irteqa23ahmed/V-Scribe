@@ -63,6 +63,14 @@ FAILED_AUDIO_SYM = '0'
 MCQ_QUESTION_TYPE = 'MCQ'
 UNANSWERED = '-- NOT ATTEMPTED --'
 
+numTonum = {
+    1 : 'one',
+    2 : 'two',
+    3 : 'three',
+    4 : 'four',
+    5 : 'five'
+}
+
 
 '''-----UITLITY-FUNCTIONS----------------------------------------------------------------------------------------------------------------'''
 
@@ -77,6 +85,9 @@ UNANSWERED = '-- NOT ATTEMPTED --'
 
 def scribe_speaks(output):
     engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)
     engine.say(output)
     engine.runAndWait()
     engine.stop()
@@ -126,11 +137,11 @@ def punc(text):
         return SERVICE_FAILURE
 
 def super_punc(ans):
-    try:
-        ans = punc(ans)
-    except Exception as e:
-        print(e)
-        scribe_speaks(SERVICE_FAILURE)
+    # try:
+    #     ans = punc(ans)
+    # except Exception as e:
+    #     print(e)
+    #     scribe_speaks(SERVICE_FAILURE)
     return ans
 
 def read_line(answer,line):
@@ -164,6 +175,7 @@ def write_answer():
                         scribe_speaks(AUDIO_NOT_RECOGNISED)
         else:
             scribe_speaks(EXITTING)
+            break
     return final_dict_ans
 
 def point_wise_answer(ans):
@@ -177,7 +189,8 @@ def point_wise_answer(ans):
             if same == False:
                 line_num+=1
                 ans += '\n'+str(line_num)+") "
-            ans += super_punc(dict_ans)
+            temp = super_punc(dict_ans)
+            ans += temp+FULL_STOP if (temp!='' and temp[-1]!=FULL_STOP) else temp
             scribe_speaks(RECORDED)
             while True:
                 scribe_speaks(FORMATTING_OPTIONS)
@@ -351,9 +364,11 @@ def read_options(q_no,entities=None):
     try:
         options = Element.query.get(q_no).mcq_options
         if entities != None and len(entities) > 0:
-            option_no = entities[0].get('value')
-            if option_no in range(1,len(options)+1):
-                scribe_speaks(EACH_OPTION.format(option_no, options[option_no].option_name))
+            print(entities[0])
+            option_no = int(entities[0].get('value'))
+            print(option_no,options)
+            if option_no in range(1,len(options)):
+                scribe_speaks(EACH_OPTION.format(option_no, options[option_no-1].option_name))
             else:
                 scribe_speaks(UNAVAILABLE_OP)
         else:
@@ -370,12 +385,19 @@ def set_all_options_False(q_no):
         i.isSelected = False
     db.session.commit()
 
+def getWordNum(text):
+    for k,v in numTonum.items():
+        if v in text:
+            return k
+    return None
+
 def choose_option(q_no):
     try:
         choice = get_audio(5)
         element = Element.query.get(q_no)
         options = element.mcq_options
-        option_no = int(re.findall(r'\d+',choice).pop())
+        propNum = getWordNum(choice)
+        option_no = propNum if propNum!=None else int(re.findall(r'\d+',choice).pop())
         if option_no in range(1,len(options)+1):
             set_all_options_False(q_no)
             element.mcq_options[option_no-1].isSelected = True
@@ -488,8 +510,9 @@ def edit_answer(q_no,entities):
             ln=-1
             while True:
                 scribe_speaks("Specify line number")
-                ln = [int(i) for i in get_audio(3).split() if i.isdigit()][0]
-                if ln!=None and ln!=FAILED_AUDIO_SYM:
+                line_no_choice = get_audio(3)
+                ln = int(re.findall(r'\d+',line_no_choice).pop())
+                if ln!=None and ln!=0 and ln!=FAILED_AUDIO_SYM:
                     break
                 else:
                     scribe_speaks(AUDIO_NOT_RECOGNISED)
