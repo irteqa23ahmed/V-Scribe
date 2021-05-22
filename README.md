@@ -15,3 +15,5 @@ Once the repository has been cloned to local device, perform following steps :<b
 
 In order to understand more about the functioning of the application, you can watch the following video:
 https://www.youtube.com/watch?v=3-dK5BlAyW8&feature=youtu.be
+
+rasa run --enable-api -m /models/nlu-20210520-193828.tar.gz
