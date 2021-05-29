@@ -24,7 +24,8 @@ path_on_cloud = '/{0}/{1}/{2}{3}'
 path_local = './assets/{0}{1}'
 
 MONGO_DB = 'mydatabase'
-MONGO_COLL = 'questions'
+MONGO_QUES_COLL = 'questions'
+MONGO_RESP_COLL = 'responses'
 STUDENT_RESPONSE = "StudentResponse"
 FIRST_QNO = 1
 ENTITY_FIRST_QNO = [{'value':FIRST_QNO}]
@@ -62,6 +63,13 @@ EMPTY_STRING = ''
 FAILED_AUDIO_SYM = '0'
 MCQ_QUESTION_TYPE = 'MCQ'
 UNANSWERED = '-- NOT ATTEMPTED --'
+STUDENT_ID = 'student_id'
+ANSWER_SHEET = 'answer_sheet'
+QNO = 'qno'
+QUESTION = 'question'
+ANSWER = 'answer'
+
+TEMP_ID_VALUE = '1MS17CS010'
 
 numTonum = {
     1 : 'one',
@@ -305,7 +313,7 @@ def get_question_paper_and_store():
 
     questions_db_client = pymongo.MongoClient(mongoURL)
     questions_db = questions_db_client[MONGO_DB]
-    questions_collection = questions_db[MONGO_COLL]
+    questions_collection = questions_db[MONGO_QUES_COLL]
     
     qp = questions_collection.find_one({"subject":{"$exists":True}})
     paper_object = Paper(subject=qp.get('subject'),total_time=qp.get('total_time'),total_marks=qp.get('total_marks'),start_time=datetime.datetime.now())
@@ -327,8 +335,29 @@ def get_question_paper_and_store():
             for option_name in options:
                 db.session.add(MCQ_OP(option_name=option_name,parent_question_no=question_no))
         db.session.commit()
-
+    questions_db_client.close()
     return paper_object.id
+
+def upload_student_repsonse():
+    db_client = pymongo.MongoClient(mongoURL)
+    responses_db = db_client[MONGO_DB]
+    responses_collection = responses_db[MONGO_RESP_COLL]
+
+    student_response = dict()
+    student_response[STUDENT_ID] = TEMP_ID_VALUE
+    student_response[ANSWER_SHEET] = []
+    for x in Element.query.all():
+        q_no = x.question_no
+        question = x.question
+        solution = ( UNANSWERED if x.subjective_answer==None else x.subjective_answer ) if x.question_type != MCQ_QUESTION_TYPE  else get_selected_option(x.mcq_options)
+        temp = dict()
+        temp[QNO] = q_no
+        temp[QUESTION] = question
+        temp[ANSWER] = solution
+        student_response[ANSWER_SHEET].append(temp)
+    
+    responses_collection.insert_one(student_response)
+    db_client.close()
 
 def convert(seconds):
     seconds = seconds % (24 * 3600)
@@ -429,19 +458,20 @@ def get_selected_option(options):
     return selected_option
 
 def terminate_exam_session(q_no,entities):
-    scribe_speaks("Thanks for writing the paper.")
-
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size = 15)
-    for x in Element.query.all():
-        q_no = x.question_no
-        question = x.question
-        solution = ( UNANSWERED if x.subjective_answer==None else x.subjective_answer ) if x.question_type != MCQ_QUESTION_TYPE  else get_selected_option(x.mcq_options)
-        
-        pdf.multi_cell(200, 10, txt = SINGLE_RESPONSE_FORMAT.format(q_no,question,solution),  align = 'L')
-    pdf.output(STUDENT_RESPONSE+PDF_XTN)
     try:
+        upload_student_repsonse()
+        scribe_speaks("Thanks for writing the paper.")
+
+        # pdf = FPDF()
+        # pdf.add_page()
+        # pdf.set_font("Arial", size = 15)
+        # for x in Element.query.all():
+        #     q_no = x.question_no
+        #     question = x.question
+        #     solution = ( UNANSWERED if x.subjective_answer==None else x.subjective_answer ) if x.question_type != MCQ_QUESTION_TYPE  else get_selected_option(x.mcq_options)
+            
+        #     pdf.multi_cell(200, 10, txt = SINGLE_RESPONSE_FORMAT.format(q_no,question,solution),  align = 'L')
+        # pdf.output(STUDENT_RESPONSE+PDF_XTN)
         # upload_to_cloud(Paper.query.get(1).subject)
         Paper.query.delete()
         Element.query.delete()
@@ -449,6 +479,7 @@ def terminate_exam_session(q_no,entities):
         db.session.commit()
     except Exception as e:
         print(e)
+        scribe_speaks(SERVICE_FAILURE)
 
 
 def read_question(q_no,entities):
