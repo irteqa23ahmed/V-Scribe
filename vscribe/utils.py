@@ -548,7 +548,7 @@ def edit_answer(q_no,entities):
                 else:
                     scribe_speaks(AUDIO_NOT_RECOGNISED)
             while True:
-                scribe_speaks("Read line {0}  or Add before line {0} or Append to line {0} or Remove line {0} or delete line after a word or exit".format(ln))
+                scribe_speaks("Read line {0}  or Add before line {0} or Attach to line {0} or Remove line {0} or delete line after a word or exit".format(ln))
                 sub_choice = get_audio(5).lower()
 
                 if "read" in sub_choice:
@@ -568,7 +568,7 @@ def edit_answer(q_no,entities):
                 elif "add" in sub_choice:
                     answer = add_line(answer, ln)
                     #app.logger.info("----------\n"+answer+"\n--------------")
-                elif "append" in sub_choice:
+                elif "attach" in sub_choice: # append/attach/add
                     answer = add_line(answer,ln,True)
                     #app.logger.info("----------\n"+answer+"\n--------------")
                 elif EXIT_CMD in sub_choice.lower():
