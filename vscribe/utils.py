@@ -150,7 +150,7 @@ def super_punc(ans):
     # except Exception as e:
     #     print(e)
     #     scribe_speaks(SERVICE_FAILURE)
-    return ans
+    return ans+FULL_STOP
 
 def read_line(answer,line):
     answer = answer.split(FULL_STOP)
@@ -198,7 +198,7 @@ def point_wise_answer(ans):
                 line_num+=1
                 ans += '\n'+str(line_num)+") "
             temp = super_punc(dict_ans)
-            ans += temp+FULL_STOP if (temp!='' and temp[-1]!=FULL_STOP) else temp
+            ans += temp if (temp!=FULL_STOP) else EMPTY_STRING
             scribe_speaks(RECORDED)
             while True:
                 scribe_speaks(FORMATTING_OPTIONS)
