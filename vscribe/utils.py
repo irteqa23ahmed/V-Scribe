@@ -68,6 +68,7 @@ ANSWER_SHEET = 'answer_sheet'
 QNO = 'qno'
 QUESTION = 'question'
 ANSWER = 'answer'
+SUBMIT_TIME = 'submit_time'
 
 TEMP_ID_VALUE = '1MS17CS010'
 
@@ -150,7 +151,7 @@ def super_punc(ans):
     # except Exception as e:
     #     print(e)
     #     scribe_speaks(SERVICE_FAILURE)
-    return ans
+    return ans+FULL_STOP
 
 def read_line(answer,line):
     answer = answer.split(FULL_STOP)
@@ -198,7 +199,7 @@ def point_wise_answer(ans):
                 line_num+=1
                 ans += '\n'+str(line_num)+") "
             temp = super_punc(dict_ans)
-            ans += temp+FULL_STOP if (temp!='' and temp[-1]!=FULL_STOP) else temp
+            ans += temp if (temp!=FULL_STOP) else EMPTY_STRING
             scribe_speaks(RECORDED)
             while True:
                 scribe_speaks(FORMATTING_OPTIONS)
@@ -345,6 +346,7 @@ def upload_student_repsonse():
 
     student_response = dict()
     student_response[STUDENT_ID] = TEMP_ID_VALUE
+    student_response[SUBMIT_TIME] = datetime.datetime.now()
     student_response[ANSWER_SHEET] = []
     for x in Element.query.all():
         q_no = x.question_no
