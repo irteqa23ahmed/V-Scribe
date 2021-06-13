@@ -68,6 +68,7 @@ ANSWER_SHEET = 'answer_sheet'
 QNO = 'qno'
 QUESTION = 'question'
 ANSWER = 'answer'
+SUBMIT_TIME = 'submit_time'
 
 TEMP_ID_VALUE = '1MS17CS010'
 
@@ -345,6 +346,7 @@ def upload_student_repsonse():
 
     student_response = dict()
     student_response[STUDENT_ID] = TEMP_ID_VALUE
+    student_response[SUBMIT_TIME] = datetime.datetime.now()
     student_response[ANSWER_SHEET] = []
     for x in Element.query.all():
         q_no = x.question_no
