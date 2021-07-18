@@ -145,13 +145,13 @@ def punc(text):
         print(e)
         return SERVICE_FAILURE
 
-def super_punc(ans):
+def super_punc(ans, put_full_stop=True):
     # try:
     #     ans = punc(ans)
     # except Exception as e:
     #     print(e)
     #     scribe_speaks(SERVICE_FAILURE)
-    return ans+FULL_STOP
+    return ans + ( FULL_STOP if put_full_stop else EMPTY_STRING)
 
 def read_line(answer,line):
     answer = answer.split(FULL_STOP)
@@ -255,7 +255,7 @@ def add_line(answer, index = None, append = False):
                 if append == False:
                     answer.insert(index-1,super_punc(addline))
                 else:
-                    answer[index-1] += str(" "+super_punc(addline))
+                    answer[index-1] += str(" "+super_punc(addline,put_full_stop = False))
             else:
                 answer.append(super_punc(addline))
             scribe_speaks("line added was : "+super_punc(addline))
