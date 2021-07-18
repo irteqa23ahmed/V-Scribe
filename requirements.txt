@@ -146,7 +146,7 @@ toga-gtk==0.2.15
 toml==0.10.0
 tqdm==4.44.0
 tzlocal==2.1
-urllib3==1.25.8
+urllib3==1.26.5
 validators==0.15.0
 virtualenv==20.0.18
 wasabi==0.6.0
