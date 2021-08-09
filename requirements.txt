@@ -118,7 +118,7 @@ python-editor==1.0.4
 python-jwt==2.0.1
 pyttsx3==2.90
 pytz==2019.3
-pywin32==300
+pywin32==301
 pywin32-ctypes==0.2.0
 requests==2.11.1
 requests-toolbelt==0.7.0
