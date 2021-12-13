@@ -69,7 +69,7 @@ jsonify==0.5
 jws==0.1.3
 kiwisolver==1.2.0
 lazy-object-proxy==1.4.3
-lxml==4.6.3
+lxml==4.6.5
 Mako==1.1.3
 MarkupSafe==1.1.1
 matplotlib==3.2.1
