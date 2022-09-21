@@ -115,7 +115,7 @@ pySmartDL==1.3.4
 python-dateutil==2.8.1
 python-docx==0.8.10
 python-editor==1.0.4
-python-jwt==2.0.1
+python-jwt==3.3.4
 pyttsx3==2.90
 pytz==2019.3
 pywin32==300
