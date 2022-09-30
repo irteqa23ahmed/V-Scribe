@@ -63,7 +63,7 @@ intervals==0.8.1
 isort==4.3.21
 itsdangerous==1.1.0
 Jinja2==2.11.2
-joblib==0.16.0
+joblib==1.2.0
 Js2Py==0.71
 jsonify==0.5
 jws==0.1.3
