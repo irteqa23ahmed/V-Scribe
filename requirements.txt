@@ -148,7 +148,7 @@ tqdm==4.44.0
 tzlocal==2.1
 urllib3==1.25.8
 validators==0.15.0
-virtualenv==20.0.18
+virtualenv==20.26.6
 wasabi==0.6.0
 webencodings==0.5.1
 webkit==1.1.0
